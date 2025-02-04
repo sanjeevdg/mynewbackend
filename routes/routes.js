@@ -6,7 +6,7 @@ const Order = require('../models/order.js');
 //const signup  = require('../controllers/auth.js');
 //const login  = require('../controllers/auth.js');
 //const isAuth  = require('../controllers/auth.js');
-const {createOrder,generateAiImage,deleteOrdersTable,deleteUserByEmail} = require('../controllers/auth');
+const {fetchBlogs,createOrder,generateAiImage,deleteOrdersTable,deleteUserByEmail,createBlogPost,editBlogPost,image} = require('../controllers/auth');
  
 
 const router = express.Router();
@@ -35,6 +35,20 @@ console.log('checking orig filename'+file.originalname); // added Date.now() so 
 
 
 const uploadFiles = multer({ storage: storage });
+
+
+/*
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'images/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  },
+})
+*/
+
+
 
 /*
 router.post("/fileupload", uploadFiles.single("file"), (req, res, next) => {
@@ -76,8 +90,17 @@ router.post('/generateAiImage', function(req, res,next){
  generateAiImage(req,res,next);
 });
 
+router.post('/fetchBlogs', function(req, res,next){
+ fetchBlogs(req,res,next);
+});
+
 router.post('/deleteUserByEmail', function(req, res,next){
  deleteUserByEmail(req,res,next);
+});
+
+
+router.post('/createBlogPost', function(req, res,next){
+ createBlogPost(req,res,next);
 });
 
 
@@ -88,6 +111,25 @@ router.post('/deleteOrdersTable', function(req, res,next){
 
 router.post('/createOrder', function(req, res,next){
  createOrder(req,res,next);
+});
+
+router.post('/editBlogPost', function(req, res,next){
+ editBlogPost(req,res,next);
+});
+
+
+router.post('/image', uploadFiles.single("file"), function (req, res,next) {
+
+const file = req.file;
+
+  console.log('reached');
+res.json({
+success: true,
+statusCode: 200,
+fileName: file.filename });
+
+
+  //res.json({});
 });
 
 

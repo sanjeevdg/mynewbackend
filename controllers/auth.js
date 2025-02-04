@@ -2,13 +2,14 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sequelize = require('../utils/database.js');
 const Order = require('../models/order.js');
+const BlogPost = require('../models/blogpost.js');
 
 const fs = require("fs");
 const axios = require('axios');
 const FormData = require('form-data');
 
 const admin = require('firebase-admin');
-
+//const multer = require('multer');
 //const admin = require("firebase-admin");
 //var formidable = require('formidable');
 //const serviceAccount = require("../firebase.json");
@@ -30,6 +31,9 @@ const tokens = [];
 
 
 */
+
+
+
 
 const generateAiImage = async (req,res,next) => {
 
@@ -99,8 +103,9 @@ admin.auth()
 
 
 const deleteOrdersTable = async (req,res,next) => {
-
-var query = "drop table orders";
+//drop table blogposts
+  //update blogposts set "bYoutubeLink"='XNqyF7twioE'
+var query = `delete from blogposts where id in (1,2,3,4)`;
 console.log('uery is'+query);
 const [results, metadata] = await sequelize.query(query);
 
@@ -110,9 +115,84 @@ res.status(200).json({"message":"orders table drop success."})
 //}
 
 };
+  
+const fetchBlogs = async (req,res,next) => {
+
+var query = "select * from blogposts";
+console.log('uery is'+query);
+const [results, metadata] = await sequelize.query(query);
+
+//if (results) {
+res.status(200).json({"blogs": results ,"message":"success getting blogs."})
+
+//}
+
+};
+
+const editBlogPost = async (req,res,next) => {
 
 
 
+BlogPost.update(({                        
+                        btitle: req.body.btitle,
+                        bByline: req.body.bByline,
+                        bSummary:req.body.bSummary,
+                      btext: req.body.btext,
+                      bImage:req.body.bImage,
+                      bCategory: req.body.bCategory,
+                      bYoutubeLink: req.body.bYoutubeLink,
+                      bMp4Link: req.body.bMp4Link,
+                      bLink: req.body.bLink,
+                      bLinkText: req.body.bLinkText                          
+                    }), {where: { id: req.body.bid} } )
+                    .then(async() => {
+                        res.status(200).json({message: "blogpost created"});
+                       
+                         
+             console.log('message sent');            
+                         
+                    })
+                    .catch(err => {
+                        console.log('create_order error message is:::::'+err);
+                        res.status(502).json({message: "error while creating the order"});
+                    });
+
+
+
+
+
+
+};
+
+
+const createBlogPost = async (req, res, next) => {
+
+BlogPost.create(({                        
+                        btitle: req.body.btitle,
+                        bByline: req.body.bByline,
+                        bSummary:req.body.bSummary,
+                      btext: req.body.btext,
+                      bImage:req.body.bImage,
+                      bCategory: req.body.bCategory,
+                      bYoutubeLink: req.body.bYoutubeLink,
+                      bMp4Link: req.body.bMp4Link,
+                      bLink: req.body.bLink,
+                      bLinkText: req.body.bLinkText                          
+                    }))
+                    .then(async() => {
+                        res.status(200).json({message: "blogpost created"});
+                       
+                         
+             console.log('message sent');            
+                         
+                    })
+                    .catch(err => {
+                        console.log('create_order error message is:::::'+err);
+                        res.status(502).json({message: "error while creating the order"});
+                    });
+
+
+};
 
 
 const createOrder = async (req, res, next) => {
@@ -154,4 +234,4 @@ const createOrder = async (req, res, next) => {
 
 
 //export { signup, login, isAuth };
-module.exports = {createOrder,generateAiImage,deleteOrdersTable,deleteUserByEmail} ;
+module.exports = {createOrder,generateAiImage,deleteOrdersTable,deleteUserByEmail,createBlogPost,fetchBlogs,editBlogPost} ;
