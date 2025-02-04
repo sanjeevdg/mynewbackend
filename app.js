@@ -94,7 +94,9 @@ console.log('initilized!!');
 /*
 */
 
-
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+});
 
 app.listen(app.get('port'), function() {
     console.log('App is running, server is listening on port ', app.get('port'));
