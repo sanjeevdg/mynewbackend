@@ -105,7 +105,7 @@ admin.auth()
 const deleteOrdersTable = async (req,res,next) => {
 //drop table blogposts
   //update blogposts set "bYoutubeLink"='XNqyF7twioE'
-var query = `delete from blogposts where id in (1,2,3,4)`;
+var query = `delete from blogposts where id in (10,11)`;
 console.log('uery is'+query);
 const [results, metadata] = await sequelize.query(query);
 
